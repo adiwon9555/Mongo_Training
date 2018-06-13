@@ -1,12 +1,13 @@
 require('./config/config.js')
 const {mongoose}=require('./db/mongoose.js');
 const {Todo}=require('./model/todo.js');
-
+const {User}=require('./model/user.js');
 
 const _=require('lodash');
 const {ObjectID}=require("mongodb");
 const express=require('express');
 const bodyParser=require('body-parser');
+
 var app=express();
 var port=process.env.PORT;
 app.use(bodyParser.json());
@@ -17,6 +18,15 @@ app.post('/todos',(req,res)=>{
     },(err)=>{
         res.status(400).send(err);
     })
+})
+app.post('/users',(req,res)=>{
+    var data=_.pick(req,body,['email','password']);
+    var user=new User(data);
+    user.save().then((user)=>{
+        res.send({user});
+    }),(err)=>{
+        res.status(400).send(err);
+    }
 })
 
 app.get("/todos",(req,res)=>{
